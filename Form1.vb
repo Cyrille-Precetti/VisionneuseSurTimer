@@ -6,11 +6,11 @@ Public Class Form1
     Private DiapoNumber As Integer = 1
     'Liste des types d'image
     Private ExtensionsFichiersImages() As String = {".gif", ".GIF", ".jpg", ".JPG", ".bmp", ".png", ".tiff", ".TIFF"}
-    Private ListeDiapos As ImageList
+    Private ListeDiapos As List(Of Bitmap) 'ImageList
 
     Private Sub ChargementImagesDepuisDossier(ByRef CheminDossier As String)
         'Création de la liste d'image ImageList
-        ListeDiapos = New ImageList
+        ListeDiapos = New List(Of Bitmap) ' New ImageList
         'Récupération des fichiers depuis le dossier en question
         Dim FichiersDansDir() As String = IO.Directory.GetFiles(CheminDossier)
         Try
@@ -18,8 +18,8 @@ Public Class Form1
             For Each FichierImage As String In FichiersDansDir
                 Dim ExtensionFichier As String = Path.GetExtension(FichierImage)
                 If ExtensionsFichiersImages.Contains(ExtensionFichier) = True Then
-                    Dim diapo As System.Drawing.Image = Image.FromFile(FichierImage)
-                    ListeDiapos.Images.Add(diapo)
+                    Dim diapo As System.Drawing.Image = bitmap.FromFile(FichierImage)
+                    ListeDiapos.Add(diapo) 'ListeDiapos.Images.Add(diapo)
                 End If
             Next
         Catch ex As Exception
@@ -60,18 +60,17 @@ Public Class Form1
             '        PictureBox1.Image = My.Resources.Pic3
             'End Select
 
-            If DiapoNumber < ListeDiapos.Images.Count - 1 Then
-                PictureBox1.Image = ListeDiapos.Images(DiapoNumber)
+            If DiapoNumber < ListeDiapos.Count - 1 Then
+                PictureBox1.Image = ListeDiapos(DiapoNumber) 'ListeDiapos.Images(DiapoNumber)
                 DiapoNumber += 1
             Else
-                PictureBox1.Image = ListeDiapos.Images(1)
+                PictureBox1.Image = ListeDiapos(0) 'ListeDiapos.Images(1)
                 DiapoNumber = 1
             End If
 
         Catch ex As Exception
             Debug.Print("Exception:" & ex.Message)
         End Try
-
 
     End Sub
 
@@ -80,5 +79,7 @@ Public Class Form1
         Call ChargementImagesDepuisDossier("C:\Users\Cyrille\Documents\Mes images\Birthday2014")
     End Sub
 
-
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        MessageBox.Show("Hello" & TextBox1.Text.ToString)
+    End Sub
 End Class
